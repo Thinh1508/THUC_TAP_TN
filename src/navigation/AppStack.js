@@ -5,8 +5,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import Home from '../screen/home';
 import Search from '../screen/search';
 import Room from '../screen/room';
-import Profile from '../screen/profile';
+import Account from '../screen/account';
 import QR from '../screen/qr';
+import Profile from '../screen/profile';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -48,7 +49,7 @@ const HomeTap = ({navigation}) => {
         <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Room" component={Room} />
-        <Tab.Screen name="Account" component={Profile} />
+        <Tab.Screen name="Account" component={Account} />
         <Tab.Screen name="QR" component={QR} />
         {/* <Tab.Screen name="Favorite" component={FavoriteMusic} /> */}
       </Tab.Navigator>
@@ -61,6 +62,7 @@ const HomeTap = ({navigation}) => {
           initialRouteName="HomeTabs"
           screenOptions={{headerShown: false}}>
           <Stack.Screen name="HomeTabs" component={MyTabs} />
+          <Stack.Screen name="Profile" component={Profile} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>
