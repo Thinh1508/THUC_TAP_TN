@@ -47,7 +47,7 @@ const HomeTap = ({navigation}) => {
           tabBarActiveBackgroundColor: '#ffffff',
           // tabBarShowLabel:false,
         })}>
-        <Tab.Screen name="Home" component={VideoPLay} />
+        <Tab.Screen name="Home" component={Home} />
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Room" component={Room} />
         <Tab.Screen name="Account" component={Account} />
@@ -64,6 +64,7 @@ const HomeTap = ({navigation}) => {
           screenOptions={{headerShown: false}}>
           <Stack.Screen name="HomeTabs" component={MyTabs} />
           <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="VideoPLay" component={VideoPLay} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

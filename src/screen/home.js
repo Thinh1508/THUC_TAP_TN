@@ -168,7 +168,10 @@ const Home = ({navigation}) => {
             marginHorizontal: 20,
             justifyContent: 'space-around',
           }}>
-          <View>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('VideoPLay');
+            }}>
             <Image
               style={{height: 90, width: 115, borderRadius: 20}}
               source={{
@@ -182,7 +185,7 @@ const Home = ({navigation}) => {
                 (8)
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
           <View>
             <Image
               style={{height: 90, width: 115, borderRadius: 20}}

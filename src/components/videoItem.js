@@ -3,26 +3,125 @@ import {
   Image,
   StatusBar,
   StyleSheet,
+  TouchableOpacity,
   Text,
   View,
   Easing,
+  Dimensions,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef} from 'react';
 import Video from 'react-native-video';
+import {getMusicNoteAnim} from '../assets/utils/animation';
+import {windowHeight, windowWidth} from '../assets/utils/Dimentions';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-export default function VideoItem({data}) {
+export default function VideoItem({data, isActive}) {
   const {uri, caption, channelName, musicName, likes, comments, avatarUri} =
     data;
   console.log(typeof uri);
+
+  const discAnimatedValue = useRef(new Animated.Value(0)).current;
+  const musicNoteAnimatedValue1 = useRef(new Animated.Value(0)).current;
+  const musicNoteAnimatedValue2 = useRef(new Animated.Value(0)).current;
+
+  const discAnimation = {
+    transform: [
+      {
+        rotate: discAnimatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '360deg'],
+        }),
+      },
+    ],
+  };
+
+  const musicNoteAnimation1 = getMusicNoteAnim(musicNoteAnimatedValue1, false);
+  const musicNoteAnimation2 = getMusicNoteAnim(musicNoteAnimatedValue2, true);
+
+  const discAnimLoopRef = useRef();
+  const musicAnimLoopRef = useRef();
+
+  const triggerAnimation = useCallback(() => {
+    discAnimLoopRef.current = Animated.loop(
+      Animated.timing(discAnimatedValue, {
+        toValue: 1,
+        duration: 3000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+    );
+    discAnimLoopRef.current.start();
+    musicAnimLoopRef.current = Animated.loop(
+      Animated.sequence([
+        Animated.timing(musicNoteAnimatedValue1, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        }),
+        Animated.timing(musicNoteAnimatedValue2, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        }),
+      ]),
+    );
+    musicAnimLoopRef.current.start();
+  }, [discAnimatedValue, musicNoteAnimatedValue1, musicNoteAnimatedValue2]);
+
+  useEffect(() => {
+    if (isActive) {
+      triggerAnimation();
+    } else {
+      discAnimLoopRef.current?.stop();
+      musicAnimLoopRef.current?.stop();
+      discAnimatedValue.setValue(0);
+      musicNoteAnimatedValue1.setValue(0);
+      musicNoteAnimatedValue2.setValue(0);
+    }
+  }, [
+    isActive,
+    triggerAnimation,
+    discAnimatedValue,
+    musicNoteAnimatedValue1,
+    musicNoteAnimatedValue2,
+  ]);
+
   return (
     <View style={styles.container}>
+      <StatusBar barStyle={'light-content'} />
+
       <Video
         source={{
-          uri: 'https://v.pinimg.com/videos/mc/720p/f6/88/88/f68888290d70aca3cbd4ad9cd3aa732f.mp4',
+          uri,
         }}
         style={styles.video}
         resizeMode="cover"
+        paused={!isActive}
+        repeat
       />
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top: 0,
+          flexDirection: 'row',
+          width: '100%',
+          paddingHorizontal: 15,
+          paddingTop: 8,
+          alignItems: 'center',
+        }}>
+        <FontAwesome name="angle-left" size={35} color={'#000000'} />
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: '500',
+            color: '#000000',
+            marginHorizontal: windowWidth / 2 - 40,
+          }}>
+          Demo
+        </Text>
+      </TouchableOpacity>
       <View style={styles.bottomSection}>
         <View style={styles.bottomLeftSection}>
           <Text style={styles.channelName}>{channelName}</Text>
@@ -36,7 +135,53 @@ export default function VideoItem({data}) {
           </View>
         </View>
 
-        <View style={styles.bottomRightSection}></View>
+        <View style={styles.bottomRightSection}>
+          <Animated.Image
+            source={require('../assets/images/floating-music-note.png')}
+            style={[styles.floatingMusicNote, musicNoteAnimation1]}
+          />
+          <Animated.Image
+            source={require('../assets/images/floating-music-note.png')}
+            style={[styles.floatingMusicNote, musicNoteAnimation2]}
+          />
+          <Animated.Image
+            source={require('../assets/images/disc.png')}
+            style={[styles.musicDisc, discAnimation]}
+          />
+        </View>
+      </View>
+
+      <View style={styles.verticalBar}>
+        <View style={[styles.verticalBarItem, styles.avatarContainer]}>
+          <Image style={styles.avatar} source={{uri: avatarUri}} />
+          <View style={styles.followButton}>
+            <Image
+              source={require('../assets/images/plus-button.png')}
+              style={styles.followIcon}
+            />
+          </View>
+        </View>
+        <View style={styles.verticalBarItem}>
+          <Image
+            style={styles.verticalBarIcon}
+            source={require('../assets/images/heart.png')}
+          />
+          <Text style={styles.verticalBarText}>{likes}</Text>
+        </View>
+        <View style={styles.verticalBarItem}>
+          <Image
+            style={styles.verticalBarIcon}
+            source={require('../assets/images/message-circle.png')}
+          />
+          <Text style={styles.verticalBarText}>{comments}</Text>
+        </View>
+        <View style={styles.verticalBarItem}>
+          <Image
+            style={styles.verticalBarIcon}
+            source={require('../assets/images/reply.png')}
+          />
+          <Text style={styles.verticalBarText}>Share</Text>
+        </View>
       </View>
     </View>
   );
@@ -45,6 +190,8 @@ export default function VideoItem({data}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: windowWidth,
+    height: windowHeight + 47,
   },
   video: {
     position: 'absolute',

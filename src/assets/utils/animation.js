@@ -1,4 +1,4 @@
-export const getMusicNoteAnim = (animatedValue, isRotatedLeft: boolean) => {
+export const getMusicNoteAnim = (animatedValue, isRotatedLeft) => {
   return {
     transform: [
       {
