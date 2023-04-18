@@ -8,6 +8,7 @@ import Room from '../screen/room';
 import Account from '../screen/account';
 import QR from '../screen/qr';
 import Profile from '../screen/profile';
+import VideoPLay from '../screen/videoPLay';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -46,7 +47,7 @@ const HomeTap = ({navigation}) => {
           tabBarActiveBackgroundColor: '#ffffff',
           // tabBarShowLabel:false,
         })}>
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Home" component={VideoPLay} />
         <Tab.Screen name="Search" component={Search} />
         <Tab.Screen name="Room" component={Room} />
         <Tab.Screen name="Account" component={Account} />
